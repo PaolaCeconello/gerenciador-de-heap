@@ -1,7 +1,3 @@
----
-title:sistema gerenciamento heap - readme
----
-
 # Sistema de gerenciamento Heap - Software Básico
 
 Implementação em C e Assembly de um sistema de gerenciamento da Heap utilizando a estratégia de reaproveitamento. O desenvolvimento do projeto se faz como o trabalho prático da matéria de Software Básico aplicada em 2026/2.
