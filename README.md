@@ -4,8 +4,8 @@ Implementação em C e Assembly de um sistema de gerenciamento da Heap utilizand
 
 ### Membros do grupo:
 
-- Paola Siqueira Ceconello - GRR20254280 ([PaolaCeconello]https://github.com/PaolaCeconello)
-- Rafaela Padilha Leitoles - GRR20254391 ([rafaleitoles]https://github.com/rafaleitoles)
+- Paola Siqueira Ceconello - GRR20254280 ([PaolaCeconello](https://github.com/PaolaCeconello))
+- Rafaela Padilha Leitoles - GRR20254391 ([rafaleitoles](https://github.com/rafaleitoles))
 
 ### Estratégias de implementação
 
