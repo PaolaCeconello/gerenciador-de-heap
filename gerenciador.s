@@ -56,7 +56,6 @@ memory_free:
 
     illegal_free:
         movq $0, %rax
-        jmp final
 
     final:
         popq %rbp
