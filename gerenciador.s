@@ -1,6 +1,6 @@
 .section .data
 .global original_brk
-original_brk: .quad 0
+original_brkd 0
 atual_brk: .quad 0
 
 .section .text
@@ -13,8 +13,8 @@ setup_brk:
     movq $12, %rax
     movq $0, %rdi
     syscall
-    movq %rax, original_brk
-    movq %rax, atual_brk
+    movq %rax, original_brk(%rip)
+    movq %rax, atual_brk(%rip)
 
     popq %rbp
     ret
@@ -24,9 +24,9 @@ dismiss_brk:
     movq %rsp, %rbp
 
     movq $12, %rax
-    movq original_brk, %rdi
+    movq original_brk(%rip), %rdi
     syscall
-    movq %rax, original_brk
+   %rax, atual_brk
 
     popq %rbp
     ret
@@ -44,10 +44,10 @@ memory_free:
 
     subq $9, %rdi
 
-    cmpq %rdi, original_brk
+    cmpq %rdi, original_brk(%rip)
     ja illegal_free
 
-    cmpq %rdi, atual_brk
+   %rdi, atual_brk
     jbe illegal_free
 
     movb $0, (%rdi)
