@@ -1,4 +1,5 @@
 .section .data
+.global original_brk
 original_brk: .quad 0
 atual_brk: .quad 0
 
@@ -40,16 +41,21 @@ memory_free:
     pushq %rbp
     movq %rsp, %rbp
 
-    cmpq %rdi, atual_brk
-    jge illegal_free
+    movq -9(%rdi), %r11
 
-    movq %rdi, %r11
-    movb $0, (%r11)
-    movq $0, %rax
+    cmpq %r11, atual_brk
+    jb illegal_free
+
+    cmpq %r11, original_brk
+    ja illegal_free
+
+    movb $0, %r11
+    movq $1, %rax
     jmp final
 
     illegal_free:
-        movq $1, %rax
+        movq $0, %rax
+        jmp final
 
     final:
         popq %rbp
