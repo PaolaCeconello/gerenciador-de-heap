@@ -26,6 +26,7 @@ dismiss_brk:
     movq $12, %rax
     movq original_brk, %rdi
     syscall
+    movq %rax, original_brk
 
     popq %rbp
     ret
@@ -41,15 +42,15 @@ memory_free:
     pushq %rbp
     movq %rsp, %rbp
 
-    movq -9(%rdi), %r11
+    subq $9, %rdi
 
-    cmpq %r11, atual_brk
-    jb illegal_free
-
-    cmpq %r11, original_brk
+    cmpq %rdi, original_brk
     ja illegal_free
 
-    movb $0, %r11
+    cmpq %rdi, atual_brk
+    jbe illegal_free
+
+    movb $0, (%rdi)
     movq $1, %rax
     jmp final
 
