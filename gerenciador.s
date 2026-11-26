@@ -35,8 +35,55 @@ memory_alloc:
     pushq %rbp
     movq %rsp, %rbp
 
-    popq %rbp
-    ret
+    cmpq original_brk, atual_brk
+    je add_final
+
+    movq $0, %r10
+    movq original_brk(%rip), %r11
+
+    cmpq $0, %rsi
+    je worst_fit
+
+    cmpq $1, %rsi
+    je best_fit
+
+    movq $1, %rax
+    jmp final
+
+    add_final:
+        movb $1, (atual_brk(%rip))
+        movq %rdi, 1(atual_brk(%rip))
+        addq $9, %rdi
+        addq %rdi, atual_brk(%rip)
+        movq $0, %rax
+        jmp final
+
+    worst_fit:
+        cmpq %r11, atual_brk(%rip)
+        jbe add_final
+
+        use_comparison:
+            cmpq $0, (%r11)
+            je size_comparison
+            addq $9, %r11
+            addq -8(%r11), %r11
+            jmp worst_fit
+
+        size_comparison:
+            cmpq %rdi, 1(%r11)
+            jge fit
+            addq $9, %r11
+            addq -8(%r11), %r11
+            jmp worst_fit
+
+    best_fit:
+
+    fit:
+
+
+    final:
+        popq %rbp
+        ret
 
 memory_free:
     pushq %rbp
@@ -56,7 +103,6 @@ memory_free:
 
     illegal_free:
         movq $0, %rax
-        jmp final
 
     final:
         popq %rbp
