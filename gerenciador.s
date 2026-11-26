@@ -91,8 +91,23 @@ memory_alloc:
             jmp walk_iterator
 
         worst_set:
+            cmpq $0, %r9
+            je set
             cmpq (%r9), (%r11)
-
+            jle step
+            jmp set
+            
+        best_set:
+            cmpq $0, %r9
+            je set
+            cmpq (%r9), (%r11)
+            jge step
+            jmp set
+        
+        set:
+            movq %r11, %r9
+            jmp step
+        
         change_content:
             subb $1, %r11
             movq %r11, %r9
@@ -102,7 +117,7 @@ memory_alloc:
             cmpq $1, $rsi
             je best_fit
 
-        worst_fit:
+        /*worst_fit:
             cmpq $0, %r9
             je add_end
             movb $1, (%r9)
@@ -130,7 +145,7 @@ memory_alloc:
 
             movq %rdi, (%r10)
             addq %rdi, %r10
-            jmp set_ret     
+            jmp set_ret*/     
 
     set_ret:
         movq $0, %rax
