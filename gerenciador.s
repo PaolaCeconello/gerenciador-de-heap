@@ -114,9 +114,16 @@ memory_alloc:
             jmp step
 
         fit:
-            cmpq $1, $rsi
-            je best_fit
-
+            movb $1,(%r9)
+            addb $1,%r9
+            movq %r9,%r10
+            subq %rdi,%r10
+            cmpq $9,%r10
+            jl set_ret
+            movq %rdi,(%r9)
+            jmp set_ret
+            
+       
         /*worst_fit:
             cmpq $0, %r9
             je add_end
