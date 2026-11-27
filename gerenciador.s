@@ -35,10 +35,6 @@ memory_alloc:
     pushq %rbp
     movq %rsp, %rbp
 
-    # compara se a heap está vazia. Se estiver, adiciona no final
-    movq original_brk(%rip), %rdx
-    cmpq %rdx, atual_brk(%rip)
-    je add_end
 
     # r9 guarda o endereço do local mais apropriado a ser inserir o bloco, independente da flag worst/best_fit
     # r11 é o iterador
