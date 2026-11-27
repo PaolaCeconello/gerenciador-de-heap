@@ -63,6 +63,9 @@ memory_alloc:
         movq atual_brk(%rip), %rdi
         movq $12, %rax
         syscall
+
+        cmpq atual_brk(%rip), %rax
+        jb error_memory
         
         subq %r8, %rdi
         subq $9, %rdi
@@ -72,6 +75,16 @@ memory_alloc:
         movq %rdi, %r9
 
         jmp set_adress                  # neste caso, o set adress é o r9 + 8
+
+    # trata o caso de excesso de memória alocada, desfazendo a alocação e retornando erro
+    error_memory:
+        subq %r8, %rdi
+        subq $9, %rdi
+        movq %rdi, atual_brk(%rip)
+        movq %12, %rax
+        syscall
+        movq $0, %rax
+        jmp final
 
     # caminha pela heap a procura do melhor bloco
     walk_iterator:
@@ -159,6 +172,7 @@ memory_alloc:
         movq %r10, (%r8)
         jmp set_adress      
 
+    # define o endereço a ser retornado no caso de sucesso: início dos dados do novo bloco
     set_adress:
         addq $8, %r9
         movq %r9, %rax
