@@ -57,24 +57,21 @@ memory_alloc:
 
     # adiciona o novo bloco no final da heap
     add_end:
-        movq atual_brk(%rip), %r10
-        movb $1, (%r10)                 # insere a flag de "ocupado" no primeiro byte
-        addq $1, atual_brk(%rip)        
-        movq atual_brk(%rip), %r10  
-        movq %rdi, (%r10)               # insere o tamanho de bytes nos proximos 8 bytes
-        addq $8, atual_brk(%rip)
-        addq %rdi, atual_brk(%rip)      # aumenta atual_brk com o tamanho do bloco
-
+        movq %rdi, %rcx
+        addq $9, atual_brk(%rip)
+        addq %rcx, atual_brk(%rip)
+        movq atual_brk(%rip), %rdi
         movq $12, %rax
-        movq atual_brk(%rip), %rdi      
-        syscall                         # aumenta a brk real
+        syscall
+        
+        subq %rcx, %rdi
+        subq $9, %rdi
+        movb $1, (%rdi)
+        addb $1, %rdi
+        movq %rcx (%rdi)
+        movq %rdi, %r9
 
-        movq atual_brk(%rip), %r9
-        subq %rdi, %r9
-        subq $8, %r9
-
-        jmp set_adress                  # neste caso, o set adress tem que ser atual_brk - rdi
-
+        jmp set_adress                  # neste caso, o set adress é o r9 + 8
 
     # caminha pela heap a procura do melhor bloco
     walk_iterator:
@@ -170,21 +167,12 @@ memory_free:
     cmpq %rdi, atual_brk(%rip)
     jbe illegal_free
 
-    addq %r10, %r8
-    cmpq %r8, atual_brk(%rip)
-    je free_end
-
-    movb $0, (%rip)
+    movb $0, (%rdi)
     jmp set_ret
 
     illegal_free:
         movq $0, %rax
         jmp final
-
-    free_end:
-        movq $12, %rax
-        syscall
-        movq %rdi, atual_brk(%rip)
 
     set_ret:
         movq $1, %rax
