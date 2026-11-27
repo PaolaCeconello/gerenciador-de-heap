@@ -1,13 +1,13 @@
-TESTES = $(basename $(wildcard *.c))
+all: main
 
-all: $(TESTES)
+main: main.o gerenciador.o
+	gcc -g main.o gerenciador.o -o main
+
+main.o: main.c gerenciador.h
+	gcc -g -c main.c -o main.o
 
 gerenciador.o: gerenciador.s
-	$(AS) $(ASFLAGS) $< -o $@
-%: %.c gerenciador.o
-	$(CC) $(CFLAGS) $< gerenciador.o -o $@
-run: all
-	for t in $(TESTES); do echo "===== $$t ====="; ./$$t; done
+	as -g gerenciador.s -o gerenciador.o
+
 clean:
-	rm -f *.o $(TESTES)
-.PHONY: all run clean
+	rm -f *.o main
