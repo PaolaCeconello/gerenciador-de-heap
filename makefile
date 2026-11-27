@@ -1,7 +1,7 @@
-all: main
+all: teste
 
-main: main.o gerenciador.o
-	gcc -g main.o gerenciador.o -o main
+teste: main.o gerenciador.o
+	gcc -g main.o gerenciador.o -o teste
 
 main.o: main.c gerenciador.h
 	gcc -g -c main.c -o main.o
@@ -10,4 +10,4 @@ gerenciador.o: gerenciador.s
 	as -g gerenciador.s -o gerenciador.o
 
 clean:
-	rm -f *.o main
+	rm -f *.o teste

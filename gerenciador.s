@@ -80,7 +80,7 @@ memory_alloc:
 
     # verifica se o bloco atual está livre ou não. Se não estiver, já avança para o próximo bloco
     use_comparison:                 
-        cmpq $0, (%r11)
+        cmpb $0, (%r11)
         je size_comparison
         addq $1, %r11
         addq (%r11), %r11
@@ -100,13 +100,15 @@ memory_alloc:
     flag_setter:
         cmpq $0, %rsi
         je worst_set
-        jmp best_set
+        
+        cmpq $1, %rsi
+        je best_set
 
     # define o r9 se a flag de worst/best for 0 e o bloco atual atender às condições
     worst_set:
         cmpq $0, %r9
         je set
-        movq (%r9), %rcx
+        movq 1(%r9), %rcx
         cmpq %rcx, (%r11)
         jle step
         jmp set
@@ -115,7 +117,7 @@ memory_alloc:
     best_set:
         cmpq $0, %r9
         je set
-        movq (%r9), %rcx
+        movq 1(%r9), %rcx
         cmpq %rcx, (%r11)
         jge step
         jmp set
@@ -139,12 +141,22 @@ memory_alloc:
         je add_end
 
         movb $1, (%r9)          # seta a flag de uso do novo bloco
+        
         addq $1, %r9            # pula para o inicio do tamanho do bloco
         movq (%r9), %r10          
         subq %rdi, %r10         # calcula a diferenca de bytes entre os dois para verificar se é possivel criar um novo bloco vazio
+        
         cmpq $10, %r10          
         jl set_adress           # neste caso, o adress tem que ser r9 + 8          
-        movq %rdi, (%r9)        
+        
+        movq %rdi, (%r9) 
+        movq %r9, %r8
+        addq $8, %r8
+        addq %rdi, %r8
+        movb $0, (%r8)
+        addq $1, %r8
+        subq $9, %r10
+        movq %r10, (%r8)
         jmp set_adress      
 
     set_adress:
@@ -156,11 +168,8 @@ memory_free:
     pushq %rbp
     movq %rsp, %rbp
 
-    movq %rdi, %r8
-    subq $8, %rdi
-    movq (%rdi), %r10
-    subq $1, %rdi
-
+    subq $9, %rdi
+  
     cmpq %rdi, original_brk(%rip)
     ja illegal_free
 
@@ -180,3 +189,4 @@ memory_free:
     final:
         popq %rbp
         ret
+

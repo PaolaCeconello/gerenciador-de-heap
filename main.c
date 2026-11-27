@@ -56,6 +56,7 @@ int main()
 	printf("\tLOCAL: %s\n", s_pnt + 59 == fo_pnt ? "CORRETO!" : "INCORRETO!");
 	printf("\tIND. DE USO: %s\n", *((char *)(fo_pnt - 9)) == 1 ? "CORRETO!" : "INCORRETO!");
 	printf("\tTAMANHO: %s\n", *((long long *)(fo_pnt - 8)) == 41 ? "CORRETO!" : "INCORRETO!");
+	printf("tamanho: %lld\n",  *((long long *)(fo_pnt - 8)));
 
 	printf("==>> DESALOCANDO UM ESPAÇO DE 40 BYTES:\n");
 	memory_free(fo_pnt);
