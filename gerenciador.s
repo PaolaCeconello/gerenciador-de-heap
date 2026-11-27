@@ -81,7 +81,7 @@ memory_alloc:
         subq %r8, %rdi
         subq $9, %rdi
         movq %rdi, atual_brk(%rip)
-        movq %12, %rax
+        movq $12, %rax
         syscall
         movq $0, %rax
         jmp final
