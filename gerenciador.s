@@ -57,18 +57,18 @@ memory_alloc:
 
     # adiciona o novo bloco no final da heap
     add_end:
-        movq %rdi, %rcx
+        movq %rdi, %r8
         addq $9, atual_brk(%rip)
-        addq %rcx, atual_brk(%rip)
+        addq %r8, atual_brk(%rip)
         movq atual_brk(%rip), %rdi
         movq $12, %rax
         syscall
         
-        subq %rcx, %rdi
+        subq %r8, %rdi
         subq $9, %rdi
         movb $1, (%rdi)
-        addb $1, %rdi
-        movq %rcx (%rdi)
+        addq $1, %rdi
+        movq %r8, (%rdi)
         movq %rdi, %r9
 
         jmp set_adress                  # neste caso, o set adress é o r9 + 8
